@@ -1,3 +1,18 @@
+import  express  from "express";
+import { port } from "./config.js";
+import  Roadmap  from "./roadmap.js";
+
+const app = express()
+
+app.get('/', (req, res) => {
+    res.send('¡Hola, mundo!');
+  });
+
+
+app.listen(port,()=>{
+    console.log('Server on port:'+port)
+})
+
 const materias=[
     {
         clave: 'CPRO',
@@ -143,12 +158,12 @@ const materias=[
     {
         clave: 'CESO',
         id:29,
-        nombre: 'Uso, adaptacion y explotacion de sistemas operativas'
+        nombre: 'Uso, adaptacion y explotacion de sistemas operativos'
     },
     {
         clave: 'SESO',
         id:30,
-        nombre: 'Seminario de uso, adaptacion y explotacion de sistemas operativas'
+        nombre: 'Seminario de uso, adaptacion y explotacion de sistemas operativos'
     },
     {
         clave: 'ALDD',
@@ -192,51 +207,11 @@ const materias=[
     }
 ]
 
+//inicializamos la clase con la lista de materias
+const roadmap = new Roadmap(materias);
 
-function createRoadmap(materias, semestres) {
-    materias.sort((a, b) => a.id - b.id);
-    const roadmap = []
-    while(materias.length > 0){
+const chain = 'CPROSPROCMATCMM1|SMM1EIFICED1SED1|TECOCMM2SMM2CED2SED2|ADMRCALGSALGPYESCBDD|SBDDADSEHIPEIDS1SDS1|CODPSEDIPPINIDS2ESP1|CESOSESOALDDADBDMIDD|OPT1CSBCSSBCCIDDOPT2';
 
-        
-        const materiasSemestre = Math.floor( materias.length/semestres);
-
-        for(let i = 0; i<materiasSemestre; i++){
-            roadmap.push(materias[i].clave);
-            i === materiasSemestre-1 ? roadmap.push('|'): null
-        }
-
-        materias.splice(0,materiasSemestre)
-   
-        semestres--;
-    }
-
-    roadmap.pop()
-    return roadmap.join('')
-}
+console.log(roadmap.toSeparateRoadmap(chain));
 
 
-function toSeparateRoadmap(roadmap,ListaMaterias){
-    roadmap = roadmap.split('|'); // Separa la cadena en semestres
-    let resultado = []
-    const semestres =[]
-
-    for (const materias of roadmap){
-        for(let i = 0; i<materias.length ; i+=4){
-           const materiaNombre= ListaMaterias.find(m => m.clave === materias.slice(i,i+4))
-           resultado.push({
-            id: materiaNombre.id,
-            clave: materiaNombre.clave,
-            nombre: materiaNombre.nombre
-           })
-        }
-        semestres.push(resultado)
-        resultado = []
-    }
-
-    return semestres;
-}
-// const roadmap = createRoadmap(materias,8)
-const r = 'CPROSPROCMATCMM1|SMM1EIFICED1SED1|TECOCMM2SMM2CED2SED2|ADMRCALGSALGPYESCBDD|SBDDADSEHIPEIDS1SDS1|CODPSEDIPPINIDS2ESP1|CESOSESOALDDADBDMIDD|OPT1CSBCSSBCCIDDOPT2'
-const roadmapnombres = toSeparateRoadmap(r,materias)
-console.log(roadmapnombres)
