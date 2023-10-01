@@ -1,26 +1,24 @@
-import { Router } from "express";
-import DatabaseManagment from "../database.cjs";
+const Router = require('express')
+const DatabaseManagment = require('../database.js')
 
 const router = Router();
 const db = new DatabaseManagment();
 
 
-export default router.get('/',(req,res)=>{
+router.get('/',(req,res)=>{
     res.send('Hello World! desde task routes')
 });
 
-router.get('/materias',async (req,res)=>{
-    const result = await db.getMaterias();
-    res.send(result.rows)
-});
+router.get('/usuarios',db.getUsers)
 
-router.get('/profesores',async (req,res)=>{
-    const result = await db.getProfesores();
-    res.send(result.rows)
-});
+router.get('/materias',db.getMaterias);
 
-router.get('/now',async (req,res)=>{
-    const result = await db.getNow()
-    res.send(result.rows)
-});
+router.get('/profesores',db.getProfesores);
 
+router.get('/now',db.getNow);
+
+router.get('/user/:userId',db.getUserById)
+
+router.get('/roadmap/:userId',db.getRoadmapUserById)
+
+module.exports = router;
