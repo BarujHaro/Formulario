@@ -165,6 +165,21 @@ setRoadmapUser = async (req, res)=>{
   }
 }
 
+getRecomendaciones = async (req,res) =>{
+try{
+const materia = req.body.nameMateria;
+const recomendaciones = await this.pool.query("SELECT p.nameP AS profesor FROM roadmapp.profesores p JOIN roadmapp.materias m ON p.materiaID = m.id WHERE m.nameM = ($1);",[materia]);
+if(recomendaciones.rowCount !== 0){
+  res.send(recomendaciones.rows)
+}else{
+  res.json({"message":"not found"})
+}
+}catch(e){
+  res.send(e);
+}
+
+}
+
 
 
 }

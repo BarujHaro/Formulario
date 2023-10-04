@@ -84,6 +84,11 @@ si la operacion es exitosa retornara -->
 */
 router.post("/api/setRoadmapUser",db.setRoadmapUser);
 
-
+/* recupera las recomendaciones para una materia en especifico , requiere un json con el nombre de la materia -->
+{
+  "nameMateria" : "Programacion"
+}
+*/
+router.get("/api/getRecomendaciones",db.getRecomendaciones)
 
 module.exports = router;
