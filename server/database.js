@@ -51,12 +51,18 @@ class DatabaseManagment {
 
   getUserById = async (req, res) => {
     try {
-      const id = req.params.userId;
+      const id = req.body.id;
       const result = await this.pool.query(
         "SELECT * FROM roadmapp.usuarios WHERE id = ($1)",
         [id]
       );
-      res.send(result.rows);
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      } else {
+        res.send(result.rows);
+      }
     } catch (e) {
       res.send(e);
     }
@@ -64,7 +70,7 @@ class DatabaseManagment {
 
   getRoadmapUserById = async (req, res) => {
     try {
-      const id = req.params.userId;
+      const id = req.body.userId;
       const result = await this.pool.query(
         "SELECT * FROM roadmapp.usuarios WHERE id = ($1)",
         [id]
@@ -79,10 +85,30 @@ class DatabaseManagment {
           "SELECT * FROM roadmapp.materias"
         );
         const listaMaterias = obtenerMaterias.rows;
-        console.log(listaMaterias);
         const algoritmoRoadmap = new Roadmap(listaMaterias);
         const roadmap = algoritmoRoadmap.toSeparateRoadmap(cadenaRoadmap);
         res.send(roadmap);
+      }
+    } catch (e) {
+      res.send(e);
+    }
+  };
+
+  searchUser = async (req, res) => {
+    try {
+      const userEmail = req.body.email;
+      const userPassword = req.body.password;
+      const result = await this.pool.query(
+        "SELECT id FROM roadmapp.usuarios WHERE email=($1) AND passwd =($2)",
+        [userEmail, userPassword]
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      } else {
+        const id = result.rows[0].id;
+        res.json(id);
       }
     } catch (e) {
       res.send(e);
