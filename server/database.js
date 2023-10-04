@@ -43,7 +43,7 @@ class DatabaseManagment {
   getUsers = async (req, res) => {
     try {
       const result = await this.pool.query("SELECT * FROM roadmapp.usuarios");
-      res.send(result);
+      res.send(result.rows);
     } catch (e) {
       res.send(e);
     }
@@ -114,6 +114,59 @@ class DatabaseManagment {
       res.send(e);
     }
   };
+
+  createUser = async(req,res) =>{
+      try{
+
+        const userEmail = req.body.email;
+        const userPassword = req.body.password;
+        const result = await this.pool.query("INSERT INTO roadmapp.usuarios (email,passwd) VALUES ($1,$2)",[userEmail,userPassword]);
+        if(result.rowCount !== 0){
+          res.json({result:1});
+        }
+      }catch(e){
+        res.send(e)
+      }
+  }
+
+
+setRoadmapUser = async (req, res)=>{
+  try{
+    const listaMaterias = req.body.materias;
+    const semestres = req.body.semestres;
+    const id = req.body.id;
+
+    const algoritmo = new Roadmap(listaMaterias);
+    const roadmap = algoritmo.createRoadmap(semestres);
+
+    const result = await this.pool.query("UPDATE roadmapp.usuarios SET roadmap = ($1) WHERE id =($2)",[roadmap,id]);
+    if(result.rowCount !==0){
+      const obtenerMaterias = await this.pool.query("SELECT * FROM roadmapp.materias");
+      const materias = obtenerMaterias.rows;
+      const algoritmoCreditos = new Roadmap(materias);
+      const data = algoritmoCreditos.toSeparateRoadmap(roadmap);
+
+      let sumaTotalCreditos = 0;
+
+      // Recorre la lista y suma los créditos
+      for (const materia of data) {
+        for (const objetoMateria of materia) {
+          sumaTotalCreditos += objetoMateria.creditos;
+        }
+      }
+    sumaTotalCreditos = 274 -sumaTotalCreditos
+     //insertamos los creditos en la base de datos
+     this.pool.query("UPDATE roadmapp.usuarios SET creditosact = ($1) WHERE id=($2)",[sumaTotalCreditos,id]);
+
+     res.json({result :1});
+    }
+  }catch(e){
+    res.send(e);
+  }
+}
+
+
+
 }
 
 module.exports = DatabaseManagment;

@@ -15,7 +15,7 @@ create schema roadmapp;
 
 CREATE TABLE roadmapp.usuarios(
     id  SERIAL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     passwd VARCHAR(255) NOT NULL,
     roadmap VARCHAR(255), 
     creditosAct INTEGER

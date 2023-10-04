@@ -49,6 +49,8 @@ class Roadmap {
 
     return semestres;
   }
+
+
 }
 
 module.exports = Roadmap;

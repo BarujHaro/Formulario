@@ -8,18 +8,82 @@ router.get("/", (req, res) => {
   res.send("Hello World! desde task routes");
 });
 
-router.get("/usuarios", db.getUsers);
+//obtiene todos los usuarios
+router.get("/api/usuarios", db.getUsers); 
 
-router.get("/materias", db.getMaterias);
+//obtiene todas las materias
+router.get("/api/materias", db.getMaterias); 
 
-router.get("/profesores", db.getProfesores);
+//obtiene todos los profesores
+router.get("/api/profesores", db.getProfesores); 
 
-router.get("/now", db.getNow);
+// obtiene la fecha actual
+router.get("/api/now", db.getNow); 
 
-router.get("/user", db.getUserById);
+/*obtiene un usuario buscando por id
+ requiere un json --> {"id" : 1}*/
+router.get("/api/user", db.getUserById); 
 
-router.get("/roadmap", db.getRoadmapUserById);
+//obtiene el roadmap de un usuario buscando por id , requiere un json --> {"userId" : 1}
+router.get("/api/roadmap", db.getRoadmapUserById);
 
-router.get("/login", db.searchUser);
+/*
+busca un usuario existente con su email y password , requiere un json --> 
+{"email" :"usuario1@alumnos.udg.mx","password" : "pa$$wd1"}
+retornara su id 
+ */
+router.get("/api/login", db.searchUser);
+
+
+/*registrara un usuario con email y password , requiere un json -->
+{
+  "email":"usuario5@alumnos.udg.mx",
+  "password" : "pa$$wd5"
+}
+
+si la insercion fue exitosa retornara -->
+{
+  "result": 1
+}
+*/
+router.post("/api/createUser",db.createUser);
+
+/*
+asignara un roadmap para un usuario y actualizara sus creditos, requeire un json con las materias que no ha cursado,semestres deseados, y id-->
+{
+  "materias": [
+    {
+      "id": 1,
+      "namem": "Programacion",
+      "numcredits": 8,
+      "clave": "CPRO",
+      "codigo": "I5882"
+    },
+    {
+      "id": 2,
+      "namem": "Seminario De Programacion",
+      "numcredits": 5,
+      "clave": "SPRO",
+      "codigo": "I5883"
+    },
+    {
+      "id": 3,
+      "namem": "Matematicas Discretas",
+      "numcredits": 8,
+      "clave": "CMAT",
+      "codigo": "I5892"
+    }
+  ],
+  "semestres" : 3,
+  "id": 1
+} 
+si la operacion es exitosa retornara -->
+{
+  "result": 1
+}
+*/
+router.post("/api/setRoadmapUser",db.setRoadmapUser);
+
+
 
 module.exports = router;
