@@ -1,6 +1,7 @@
 const { Pool } = require("pg");
 const Roadmap = require("./roadmap");
 
+
 class DatabaseManagment {
   constructor() {
     const config = {
@@ -12,7 +13,14 @@ class DatabaseManagment {
     };
     this.pool = new Pool(config);
   }
+  
+  async insertDatos(nombre, correo, contrasena, roadmap, creditos) {
+    const query = 'INSERT INTO usuarios (nombre, correo, contrasena, roadmap, creditos) VALUES ($1, $2, $3, $4, $5)';
+    const values = [nombre, correo, contrasena, roadmap, creditos];
 
+    const result = await this.pool.query(query, values);
+    return result;
+  }
   getMaterias = async (req, res) => {
     try {
       const result = await this.pool.query("SELECT * FROM roadmapp.materias");

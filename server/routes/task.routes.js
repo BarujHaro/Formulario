@@ -1,8 +1,8 @@
 const Router = require("express");
 const DatabaseManagment = require("../database.js");
-
 const router = Router();
 const db = new DatabaseManagment();
+const { insertDatos } = require('../database.js');
 
 router.get("/", (req, res) => {
   res.send("Hello World! desde task routes");
@@ -90,5 +90,17 @@ router.post("/api/setRoadmapUser",db.setRoadmapUser);
 }
 */
 router.get("/api/getRecomendaciones",db.getRecomendaciones)
+
+router.post('/guardar-datos', async (req, res) => {
+  try {
+    const { nombre, correo, contrasena, roadmap, creditos } = req.body;
+    //const result = await db.insertDatos(nombre, correo, contrasena, roadmap, creditos);
+    const result = await insertDatos(db.pool, nombre, correo, contrasena, roadmap, creditos);
+    res.json({ message: 'Datos guardados con éxito' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 module.exports = router;
